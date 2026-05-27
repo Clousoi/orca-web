@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ORCA — Sosyal Organizasyon Ağı</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:   #0a0f1e;
+      --navy2:  #111827;
+      --navy3:  #1a2438;
+      --orange: #f97316;
+      --gold:   #fbbf24;
+      --white:  #f8fafc;
+      --gray:   #94a3b8;
+      --light:  #e2e8f0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--navy);
+      color: var(--white);
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(10,15,30,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(249,115,22,0.15);
+      padding: 1rem 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-size: 1.6rem; font-weight: 900; letter-spacing: 3px;
+      background: linear-gradient(135deg, var(--orange), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--gray); text-decoration: none; font-size: 0.9rem;
+      transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--orange); }
+    .nav-cta {
+      background: var(--orange); color: #fff; border: none;
+      padding: .55rem 1.4rem; border-radius: 8px; font-weight: 700;
+      cursor: pointer; font-size: .9rem; transition: opacity .2s;
+    }
+    .nav-cta:hover { opacity: .85; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      text-align: center;
+      padding: 8rem 1.5rem 4rem;
+      background: radial-gradient(ellipse at 50% 0%, rgba(249,115,22,0.12) 0%, transparent 70%),
+                  var(--navy);
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23f97316' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-inner { position: relative; max-width: 800px; }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(249,115,22,0.15);
+      border: 1px solid rgba(249,115,22,0.3);
+      color: var(--orange); padding: .4rem 1.2rem;
+      border-radius: 100px; font-size: .85rem; font-weight: 600;
+      margin-bottom: 1.5rem; letter-spacing: 1px;
+    }
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 900; line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--orange), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--gray); max-width: 580px; margin: 0 auto 2.5rem;
+    }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--orange), #ea580c);
+      color: #fff; padding: .85rem 2.2rem; border-radius: 10px;
+      font-weight: 700; font-size: 1rem; border: none; cursor: pointer;
+      text-decoration: none; display: inline-block; transition: transform .2s, box-shadow .2s;
+      box-shadow: 0 4px 24px rgba(249,115,22,0.35);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(249,115,22,0.45); }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(249,115,22,0.4);
+      color: var(--orange); padding: .85rem 2.2rem; border-radius: 10px;
+      font-weight: 700; font-size: 1rem; cursor: pointer;
+      text-decoration: none; display: inline-block; transition: .2s;
+    }
+    .btn-outline:hover { background: rgba(249,115,22,0.08); }
+
+    /* STATS */
+    .stats {
+      display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;
+      margin-top: 4rem; padding-top: 3rem;
+      border-top: 1px solid rgba(255,255,255,0.07);
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 2rem; font-weight: 900;
+      background: linear-gradient(135deg, var(--orange), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .stat-label { font-size: .8rem; color: var(--gray); text-transform: uppercase; letter-spacing: 1px; }
+
+    /* SECTIONS */
+    section { padding: 5rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      display: inline-block; color: var(--orange);
+      font-size: .8rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; margin-bottom: .75rem;
+    }
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 900; margin-bottom: 1rem;
+    }
+    .section-sub { color: var(--gray); max-width: 560px; margin-bottom: 3rem; }
+
+    /* KATMANLAR */
+    .layers { background: var(--navy2); }
+    .layer-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .layer-card {
+      background: var(--navy3);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px; padding: 2rem;
+      transition: border-color .2s, transform .2s;
+      position: relative; overflow: hidden;
+    }
+    .layer-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--orange), var(--gold));
+      opacity: 0; transition: opacity .2s;
+    }
+    .layer-card:hover { border-color: rgba(249,115,22,0.3); transform: translateY(-4px); }
+    .layer-card:hover::before { opacity: 1; }
+    .layer-icon { font-size: 2.2rem; margin-bottom: 1rem; }
+    .layer-name {
+      font-size: 1.1rem; font-weight: 800; color: var(--orange);
+      margin-bottom: .5rem; letter-spacing: 1px;
+    }
+    .layer-desc { font-size: .9rem; color: var(--gray); line-height: 1.6; }
+    .layer-tags { margin-top: 1rem; display: flex; flex-wrap: wrap; gap: .4rem; }
+    .tag {
+      background: rgba(249,115,22,0.1); border: 1px solid rgba(249,115,22,0.2);
+      color: var(--orange); padding: .2rem .6rem; border-radius: 100px;
+      font-size: .72rem; font-weight: 600;
+    }
+
+    /* AKTİVİTELER */
+    .activities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1rem;
+    }
+    .act-card {
+      background: var(--navy2); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; padding: 1.5rem 1.2rem; text-align: center;
+      transition: .2s;
+    }
+    .act-card:hover { border-color: rgba(249,115,22,0.3); }
+    .act-icon { font-size: 1.8rem; margin-bottom: .6rem; }
+    .act-name { font-size: .9rem; font-weight: 700; color: var(--white); margin-bottom: .3rem; }
+    .act-age { font-size: .75rem; color: var(--gray); }
+
+    /* ÜYELİK */
+    .membership { background: var(--navy2); }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.5rem; align-items: start;
+    }
+    .price-card {
+      background: var(--navy3); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px; padding: 2rem; transition: .2s;
+    }
+    .price-card.featured {
+      border-color: var(--orange);
+      box-shadow: 0 0 40px rgba(249,115,22,0.15);
+      transform: scale(1.03);
+    }
+    .price-badge {
+      background: linear-gradient(135deg, var(--orange), var(--gold));
+      color: #fff; font-size: .72rem; font-weight: 700; padding: .3rem .8rem;
+      border-radius: 100px; display: inline-block; margin-bottom: 1rem;
+      letter-spacing: 1px;
+    }
+    .price-name { font-size: 1.2rem; font-weight: 800; margin-bottom: .3rem; }
+    .price-amount {
+      font-size: 2.2rem; font-weight: 900; margin: .5rem 0;
+      background: linear-gradient(135deg, var(--orange), var(--gold));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .price-period { font-size: .8rem; color: var(--gray); margin-bottom: 1.5rem; }
+    .price-features { list-style: none; margin-bottom: 2rem; }
+    .price-features li {
+      font-size: .88rem; color: var(--gray); padding: .4rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      display: flex; align-items: center; gap: .5rem;
+    }
+    .price-features li::before { content: '✓'; color: var(--orange); font-weight: 700; }
+    .price-btn {
+      display: block; text-align: center; padding: .8rem;
+      border-radius: 10px; font-weight: 700; font-size: .95rem;
+      text-decoration: none; transition: .2s; cursor: pointer; border: none;
+      width: 100%;
+    }
+    .price-btn-main {
+      background: linear-gradient(135deg, var(--orange), #ea580c);
+      color: #fff; box-shadow: 0 4px 16px rgba(249,115,22,0.3);
+    }
+    .price-btn-main:hover { opacity: .9; }
+    .price-btn-outline {
+      background: transparent; border: 1.5px solid rgba(249,115,22,0.35);
+      color: var(--orange);
+    }
+    .price-btn-outline:hover { background: rgba(249,115,22,0.08); }
+
+    /* AKIŞ */
+    .flow { background: var(--navy); }
+    .flow-steps {
+      display: flex; flex-direction: column; gap: 0;
+      max-width: 680px; margin: 0 auto;
+    }
+    .flow-step {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      padding: 1.5rem 0; position: relative;
+    }
+    .flow-step:not(:last-child)::after {
+      content: '';
+      position: absolute; left: 1.2rem; top: 4rem; bottom: -1rem;
+      width: 2px; background: rgba(249,115,22,0.2);
+    }
+    .flow-num {
+      width: 2.5rem; height: 2.5rem; border-radius: 50%;
+      background: linear-gradient(135deg, var(--orange), var(--gold));
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: .9rem; flex-shrink: 0; color: #fff;
+    }
+    .flow-text h3 { font-size: 1rem; font-weight: 700; margin-bottom: .3rem; }
+    .flow-text p { font-size: .88rem; color: var(--gray); }
+
+    /* HAVUZ */
+    .havuz {
+      background: radial-gradient(ellipse at 50% 50%, rgba(249,115,22,0.07) 0%, transparent 70%),
+                  var(--navy2);
+      text-align: center;
+    }
+    .havuz-box {
+      max-width: 700px; margin: 0 auto;
+      background: var(--navy3); border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 24px; padding: 3rem 2rem;
+    }
+    .havuz-icon { font-size: 3rem; margin-bottom: 1rem; }
+    .havuz-title { font-size: 1.6rem; font-weight: 900; margin-bottom: 1rem; }
+    .havuz-desc { color: var(--gray); margin-bottom: 2rem; }
+    .havuz-steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem; text-align: left;
+    }
+    .havuz-step {
+      background: rgba(249,115,22,0.08); border: 1px solid rgba(249,115,22,0.15);
+      border-radius: 12px; padding: 1.2rem;
+    }
+    .havuz-step-num { color: var(--orange); font-weight: 900; font-size: 1.2rem; }
+    .havuz-step-text { font-size: .82rem; color: var(--gray); margin-top: .3rem; }
+
+    /* CTA */
+    .cta {
+      text-align: center;
+      background: linear-gradient(135deg, rgba(249,115,22,0.1), rgba(251,191,36,0.05)),
+                  var(--navy2);
+      border-top: 1px solid rgba(249,115,22,0.1);
+    }
+    .cta h2 { font-size: clamp(1.8rem, 4vw, 2.6rem); font-weight: 900; margin-bottom: 1rem; }
+    .cta p { color: var(--gray); margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    /* FOOTER */
+    footer {
+      background: var(--navy); border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 2rem 1.5rem; text-align: center;
+      color: var(--gray); font-size: .85rem;
+    }
+    footer .logo { font-size: 1.2rem; margin-bottom: .5rem; display: block; }
+
+    /* MOBILE */
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .price-card.featured { transform: none; }
+      .stats { gap: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="logo">ORCA</span>
+  <ul class="nav-links">
+    <li><a href="#katmanlar">Sistem</a></li>
+    <li><a href="#aktiviteler">Aktiviteler</a></li>
+    <li><a href="#uyelik">Üyelik</a></li>
+    <li><a href="#havuz">Havuz</a></li>
+  </ul>
+  <a href="#uyelik" class="nav-cta">Üye Ol</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">🌊 Sosyal Organizasyon Ağı</div>
+    <h1>Geliş. Bağlan.<br /><span>Büyü.</span></h1>
+    <p>ORCA, insanları geliştiren, birbirine bağlayan ve ekonomiye dahil eden
+       sosyal organizasyon ekosistemidir. Çocuktan yetişkine, herkes için.</p>
+    <div class="hero-btns">
+      <a href="#uyelik" class="btn-primary">Ücretsiz Başla</a>
+      <a href="#katmanlar" class="btn-outline">Sistemi Keşfet</a>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Ekosistem Katmanı</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">12+</div>
+        <div class="stat-label">Aktivite Kategorisi</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">6-65</div>
+        <div class="stat-label">Yaş Aralığı</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">₺0</div>
+        <div class="stat-label">Başlangıç Maliyeti</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KATMANLAR -->
+<section class="layers" id="katmanlar">
+  <div class="container">
+    <span class="section-tag">Ekosistem</span>
+    <h2 class="section-title">ORCA Nasıl Çalışır?</h2>
+    <p class="section-sub">Dört birbirini besleyen katman. Sadece bir kurs değil — tam bir ekosistem.</p>
+    <div class="layer-grid">
+      <div class="layer-card">
+        <div class="layer-icon">🧠</div>
+        <div class="layer-name">ORCA CORE</div>
+        <div class="layer-desc">Topluluk ve insan geliştirme motoru. Aktiviteler, üyelik, puan ve görev sistemi.</div>
+        <div class="layer-tags">
+          <span class="tag">Aktiviteler</span>
+          <span class="tag">Üyelik</span>
+          <span class="tag">Puan</span>
+          <span class="tag">Görev</span>
+        </div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-icon">🤝</div>
+        <div class="layer-name">ORCA BUSINESS</div>
+        <div class="layer-desc">Yerel işletme ağı. Üyelere indirim, işletmelere müşteri ve reklam.</div>
+        <div class="layer-tags">
+          <span class="tag">İndirim Ağı</span>
+          <span class="tag">Sponsor</span>
+          <span class="tag">Ortaklık</span>
+        </div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-icon">🎪</div>
+        <div class="layer-name">ORCA EVENTS</div>
+        <div class="layer-desc">Organizasyon ajansı. Düğün, kurumsal, festival, workshop, lansman.</div>
+        <div class="layer-tags">
+          <span class="tag">Organizasyon</span>
+          <span class="tag">Düğün</span>
+          <span class="tag">Kurumsal</span>
+        </div>
+      </div>
+      <div class="layer-card">
+        <div class="layer-icon">🎬</div>
+        <div class="layer-name">ORCA STUDIO</div>
+        <div class="layer-desc">Medya ve reklam ajansı. Sosyal medya, video, fotoğraf, web, Meta reklam.</div>
+        <div class="layer-tags">
+          <span class="tag">Sosyal Medya</span>
+          <span class="tag">Video</span>
+          <span class="tag">Web</span>
+          <span class="tag">Reklam</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AKTİVİTELER -->
+<section id="aktiviteler">
+  <div class="container">
+    <span class="section-tag">ORCA Core</span>
+    <h2 class="section-title">Aktiviteler</h2>
+    <p class="section-sub">Çocuktan yetişkine, sanatsal, sportif ve zihinsel aktiviteler.</p>
+    <div class="activities-grid">
+      <div class="act-card"><div class="act-icon">🎨</div><div class="act-name">Resim & İllüstrasyon</div><div class="act-age">6 yaş üzeri</div></div>
+      <div class="act-card"><div class="act-icon">🏺</div><div class="act-name">Seramik & El Sanatları</div><div class="act-age">8 yaş üzeri</div></div>
+      <div class="act-card"><div class="act-icon">🎵</div><div class="act-name">Müzik & Ritim</div><div class="act-age">Her yaş</div></div>
+      <div class="act-card"><div class="act-icon">💃</div><div class="act-name">Sokak Dansı</div><div class="act-age">10–25 yaş</div></div>
+      <div class="act-card"><div class="act-icon">📸</div><div class="act-name">Fotoğrafçılık</div><div class="act-age">15 yaş üzeri</div></div>
+      <div class="act-card"><div class="act-icon">🎭</div><div class="act-name">Tiyatro & Sahne</div><div class="act-age">7 yaş üzeri</div></div>
+      <div class="act-card"><div class="act-icon">♟️</div><div class="act-name">Satranç & Strateji</div><div class="act-age">6 yaş üzeri</div></div>
+      <div class="act-card"><div class="act-icon">💻</div><div class="act-name">Kodlama & Yapay Zeka</div><div class="act-age">10–25 yaş</div></div>
+      <div class="act-card"><div class="act-icon">🏔️</div><div class="act-name">Outdoor & Doğa</div><div class="act-age">15 yaş üzeri</div></div>
+      <div class="act-card"><div class="act-icon">🧘</div><div class="act-name">Yoga & Nefes</div><div class="act-age">Her yaş</div></div>
+      <div class="act-card"><div class="act-icon">🚀</div><div class="act-name">Girişimcilik</div><div class="act-age">16 yaş üzeri</div></div>
+      <div class="act-card"><div class="act-icon">⚽</div><div class="act-name">Takım Sporları</div><div class="act-age">8–30 yaş</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SİSTEM AKIŞI -->
+<section class="flow">
+  <div class="container" style="max-width:720px">
+    <span class="section-tag">Nasıl İşliyor?</span>
+    <h2 class="section-title">ORCA Döngüsü</h2>
+    <p class="section-sub" style="margin-bottom:2.5rem">Katılmaktan kendi işini kurmaya kadar her adım sisteme bağlı.</p>
+    <div class="flow-steps">
+      <div class="flow-step"><div class="flow-num">1</div><div class="flow-text"><h3>Gel & Keşfet</h3><p>Ücretsiz Explorer üyeliğiyle aktivitelere katıl, topluluğu tanı.</p></div></div>
+      <div class="flow-step"><div class="flow-num">2</div><div class="flow-text"><h3>Geliş & Bağlan</h3><p>Üyelik al, puan kazan, ağını genişlet, gerçek projeler üstlen.</p></div></div>
+      <div class="flow-step"><div class="flow-num">3</div><div class="flow-text"><h3>Çalış & Kazan</h3><p>ORCA Events ve Studio projelerinde görev al, gerçek gelir elde et.</p></div></div>
+      <div class="flow-step"><div class="flow-num">4</div><div class="flow-text"><h3>Kanıtla & Liderleş</h3><p>Ekip yönet, projeleri yönet, ORCA içinde marka ol.</p></div></div>
+      <div class="flow-step"><div class="flow-num">5</div><div class="flow-text"><h3>Yatırım Al & Kur</h3><p>ORCA Havuzundan destek al, kendi işini kur, ekosistemde kal.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ÜYELİK -->
+<section class="membership" id="uyelik">
+  <div class="container">
+    <span class="section-tag">Üyelik</span>
+    <h2 class="section-title">Seviyeni Seç</h2>
+    <p class="section-sub">Ücretsiz başla, büyüdükçe yüksel. Her seviyede gerçek fırsatlar.</p>
+    <div class="pricing-grid">
+
+      <div class="price-card">
+        <div class="price-name">Explorer</div>
+        <div class="price-amount">Ücretsiz</div>
+        <div class="price-period">Sonsuza kadar</div>
+        <ul class="price-features">
+          <li>Telegram topluluğuna erişim</li>
+          <li>Aylık 1 ücretsiz aktivite</li>
+          <li>Açık etkinliklere katılım</li>
+          <li>ORCA bülteni</li>
+        </ul>
+        <a href="#basvur" class="price-btn price-btn-outline">Ücretsiz Başla</a>
+      </div>
+
+      <div class="price-card featured">
+        <div class="price-badge">⭐ POPÜLER</div>
+        <div class="price-name">Member</div>
+        <div class="price-amount">250₺</div>
+        <div class="price-period">aylık · 2.200₺ yıllık</div>
+        <ul class="price-features">
+          <li>Aylık 4 aktiviteye erişim</li>
+          <li>Puan sistemi hakkı</li>
+          <li>ORCA Business indirim ağı</li>
+          <li>Aylık üye buluşması</li>
+          <li>Tam üye ağına dahil</li>
+        </ul>
+        <a href="#basvur" class="price-btn price-btn-main">Hemen Katıl</a>
+      </div>
+
+      <div class="price-card">
+        <div class="price-name">Builder</div>
+        <div class="price-amount">500₺</div>
+        <div class="price-period">aylık · 4.500₺ yıllık</div>
+        <ul class="price-features">
+          <li>Sınırsız aktivite erişimi</li>
+          <li>Projelerde görev & gelir</li>
+          <li>Mentorluk erişimi</li>
+          <li>ORCA Havuzu değerlendirmesi</li>
+          <li>Leader adaylık hakkı</li>
+        </ul>
+        <a href="#basvur" class="price-btn price-btn-outline">Builder Ol</a>
+      </div>
+
+      <div class="price-card">
+        <div class="price-name">Aile Paketi</div>
+        <div class="price-amount">800₺</div>
+        <div class="price-period">aylık · 7.000₺ yıllık</div>
+        <ul class="price-features">
+          <li>2 yetişkin + 2 çocuk</li>
+          <li>Tüm aile aktiviteleri</li>
+          <li>Çocuk programlarına öncelik</li>
+          <li>Aile etkinliklerine erişim</li>
+        </ul>
+        <a href="#basvur" class="price-btn price-btn-outline">Aile Üyeliği</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- HAVUZ -->
+<section class="havuz" id="havuz">
+  <div class="container">
+    <div class="havuz-box">
+      <div class="havuz-icon">🌊</div>
+      <div class="havuz-title">ORCA Havuzu</div>
+      <div class="havuz-desc">Topluluktan kazanılan gelirin %20–30'u birikir. Kendini kanıtlayan üyeler iş kurmak için bu havuzdan destek alır. Ekosistem kapanır, güçlenir.</div>
+      <div class="havuz-steps">
+        <div class="havuz-step"><div class="havuz-step-num">1</div><div class="havuz-step-text">Topluluğa katıl, aktivitelere gir</div></div>
+        <div class="havuz-step"><div class="havuz-step-num">2</div><div class="havuz-step-text">Projelerde çalış, puan ve gelir kazan</div></div>
+        <div class="havuz-step"><div class="havuz-step-num">3</div><div class="havuz-step-text">Kendini kanıtla, Leader ol</div></div>
+        <div class="havuz-step"><div class="havuz-step-num">4</div><div class="havuz-step-text">Havuzdan yatırım al, işini kur</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="basvur">
+  <div class="container">
+    <h2>Ekosisteme Dahil Ol</h2>
+    <p>Ücretsiz Explorer üyeliğiyle başla. İstediğin zaman yükselt.</p>
+    <a href="https://forms.google.com/PLACEHOLDER" class="btn-primary" target="_blank">
+      Şimdi Başvur — Ücretsiz
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="logo">ORCA</span>
+  <p>Sosyal Organizasyon Ağı · Türkiye</p>
+  <p style="margin-top:.5rem">
+    <a href="#" style="color:var(--gray);margin:0 .5rem">Instagram</a>
+    <a href="#" style="color:var(--gray);margin:0 .5rem">LinkedIn</a>
+    <a href="#" style="color:var(--gray);margin:0 .5rem">WhatsApp</a>
+  </p>
+</footer>
+
+</body>
+</html>
